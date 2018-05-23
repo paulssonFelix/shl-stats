@@ -6,7 +6,9 @@
     <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
     {% endfor %}
 
-    <canvas id="myChart" width="200" height="100"></canvas>
+    <div style="width: 90%; max-width: 1200px">
+    <canvas id="myChart"></canvas>
+    </div>
 {% endblock %}
 
 {% block script %}
@@ -17,32 +19,52 @@ var myChart = new Chart(ctx, {
     type: 'line',
     data: {
         datasets: [{
-            label: 'HV71 Poäng 17/18',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
+            label: 'HV71',
+            data: [
+              {x: 0, y: 0},
+              {x: 1, y: 3},
+              {x: 2, y: 6},
+              {x: 3, y: 8},
+              {x: 4, y: 8},
+              {x: 5, y: 11}
             ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
+            backgroundColor: 'rgba(99, 99, 232, 0.2)',
+            borderColor: 'rgba(99, 99, 232, 1)',
+            borderWidth: 1,
+            lineTension: 0
+        },
+        {
+            label: 'BIF',
+            data: [
+              {x: 0, y: 0},
+              {x: 1, y: 0},
+              {x: 2, y: 0},
+              {x: 3, y: 1},
+              {x: 4, y: 4},
+              {x: 5, y: 4}
             ],
-            borderWidth: 1
+            backgroundColor: 'rgba(199, 99, 99, 0.2)',
+            borderColor: 'rgba(199, 99, 99, 1)',
+            borderWidth: 1,
+            lineTension: 0
         }]
     },
     options: {
         scales: {
+            xAxes: [{
+                ticks: {
+                    beginAtZero:true,
+                    stepSize: 2,
+                    max: 52
+                },
+                type: 'linear',
+                position: 'bottom'
+            }],
             yAxes: [{
                 ticks: {
-                    beginAtZero:true
+                    beginAtZero:true,
+                    stepSize: 12,
+                    max: 156
                 }
             }]
         }
