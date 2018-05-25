@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
+from app.models import User, ApiCache
 from werkzeug.urls import url_parse
 
 @app.route('/')
@@ -20,7 +20,10 @@ def index():
             'body': 'The Avengers movie was so cool!'
         }
     ]
-    return render_template('index.html', title='Home', user=user, posts=posts)
+    # ApiCache.request(self, '/seasons/2017/games')
+    # games = ApiCache.query.filter_by(url='/seasons/2017/games').first()
+    games =
+    return render_template('index.html', title='Home', user=user, posts=posts, games=games)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

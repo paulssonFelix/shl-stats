@@ -6,6 +6,8 @@
     <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
     {% endfor %}
 
+    <div><p>{{ games }}</p></div>
+
     <div style="width: 90%; max-width: 1200px">
     <canvas id="myChart"></canvas>
     </div>
@@ -32,38 +34,35 @@ var myChart = new Chart(ctx, {
             borderColor: 'rgba(99, 99, 232, 1)',
             borderWidth: 1,
             lineTension: 0
-        },
-        {
-            label: 'BIF',
-            data: [
-              {x: 0, y: 0},
-              {x: 1, y: 0},
-              {x: 2, y: 0},
-              {x: 3, y: 1},
-              {x: 4, y: 4},
-              {x: 5, y: 4}
-            ],
-            backgroundColor: 'rgba(199, 99, 99, 0.2)',
-            borderColor: 'rgba(199, 99, 99, 1)',
-            borderWidth: 1,
-            lineTension: 0
         }]
     },
     options: {
+        title: {
+          display: true,
+          text: '17/18 Matchpoäng'
+        },
         scales: {
             xAxes: [{
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Match'
+                },
                 ticks: {
                     beginAtZero:true,
-                    stepSize: 2,
+                    stepSize: 52/8,
                     max: 52
                 },
                 type: 'linear',
                 position: 'bottom'
             }],
             yAxes: [{
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Poäng'
+                },
                 ticks: {
                     beginAtZero:true,
-                    stepSize: 12,
+                    stepSize: 156/12,
                     max: 156
                 }
             }]

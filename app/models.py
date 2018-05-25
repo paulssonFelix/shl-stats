@@ -4,7 +4,8 @@ from flask_login import UserMixin
 from sqlalchemy_utils import ArrowType
 import arrow
 import json
-from flask import g
+from flask import g, current_app
+import requests
 
 
 class User(UserMixin, db.Model):
@@ -34,28 +35,37 @@ class ApiCache(db.Model):
     data = db.Column(db.UnicodeText)
 
 
-    def request(self, url):
+    @staticmethod
+    def request(url):
         cache = ApiCache.query.filter_by(url=url).first()
         if cache and cache.time < arrow.utcnow():
             # Giltigt data finns i cache. Returnera.
+            current_app.logger.debug('Cache hit!')
             return json.loads(cache.data)
 
         BASE_URL = app.config['BASE_URL']
+        current_app.logger.debug('Requesting {}'.format(url))
         r = requests.get(BASE_URL + url,
                         headers={'Authorization': 'Bearer ' + getattr(g, 'token', '')})
 
         while r.status_code == 400:
-            r_token = requests.post(BASE_URL + '/oauth2/token',
-                              data={'grant_type': 'client_credentials',
-                              'client_id': app.config['CLIENT_ID'],
-                              'client_secret': app.config['CLIENT_SECRET']})
+            current_app.logger.info('Invalid credentials or other error ({}).'.format(r.status_code))
+            data = {'grant_type': 'client_credentials',
+                    'client_id': app.config['CLIENT_ID'],
+                    'client_secret': app.config['CLIENT_SECRET']}
+            current_app.logger.debug('Requesting token with data:\n{}'.format(data))
+            r_token = requests.post(BASE_URL + '/oauth2/token', data=data)
+            current_app.logger.debug('Token request return data.\n{}'.format(r_token))
 
-            setattr(g, 'token', token = r_token.json()['access_token'])
+            token = r_token.json()['access_token']
+            current_app.logger.debug('Received access token: {}'.format(token))
+            setattr(g, 'token', token = token)
 
             r = requests.get(BASE_URL + url,
                             headers={'Authorization': 'Bearer ' + getattr(g, 'token', '')})
 
         if 200 <= r.status_code < 400:
+            current_app.logger.debug('Successful request to API. Storing in cache.')
             if cache:
                 db.session.delete(cache)
                 db.session.commit()
